@@ -15,3 +15,14 @@ CONTOUR_IMAGE_FILE = os.path.join(PNG_OUTPUT_FOLDER, os.path.basename(IMAGE_PATH
 # Path for python modules
 PYTHON_MODULES_PATH = os.path.join(BASE_DIR, 'static', 'python')
 
+# A3 page size in points (1 point = 1/72 inch)
+A3_WIDTH_PT = 841.89  # 297 mm
+A3_HEIGHT_PT = 1190.55  # 420 mm
+
+# Image dimensions in mm (for example, 100 mm by 150 mm)
+IMG_WIDTH_MM = 100
+IMG_HEIGHT_MM = 150
+
+# Convert mm to points (1 mm = 0.352778 points)
+IMG_WIDTH_PT = IMG_WIDTH_MM * 0.352778
+IMG_HEIGHT_PT = IMG_HEIGHT_MM * 0.352778
