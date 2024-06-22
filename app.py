@@ -1,14 +1,17 @@
 import sys
-import os
-from config import IMAGE_PATH, PDF_OUTPUT_FOLDER, PYTHON_MODULES_PATH
-
-# Add the directory containing contour.py and trans_bg.py to the Python path
+import os  # Import the os module
+from config import IMAGE_PATH, PDF_OUTPUT_FOLDER, PYTHON_MODULES_PATH, CONTOUR_IMAGE_FILE, CONTOUR_PDF_FILE
+from contour import generate_contour, save_contour_image
+from pdf_print import generate_pdf
 sys.path.append(PYTHON_MODULES_PATH)
 
-from contour import generate_contour, save_contour_as_pdf
-
-# Generate the contour image and save it as a PDF
+# Generate the contour image
 contour_image = generate_contour(IMAGE_PATH)
-pdf_output_file = save_contour_as_pdf(contour_image, IMAGE_PATH, PDF_OUTPUT_FOLDER)
+save_contour_image(contour_image)  # Save the contour image
+# Open the contour image in a new tab
+contour_image.show()  # Open the contour image in a new tab
 
-print(f'Contour PDF saved to: {pdf_output_file}')
+# Import the generate_pdf function from pdf_print.py
+
+# Generate the PDF
+pdf = generate_pdf(IMAGE_PATH, PDF_OUTPUT_FOLDER)
