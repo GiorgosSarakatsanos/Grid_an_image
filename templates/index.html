@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Grid PWA</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="manifest" href="/static/manifest.json">
+</head>
+<body>
+    <header>
+        <h1>Image Grid PWA</h1>
+    </header>
+    <main>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="images">Select Images:</label>
+            <input type="file" id="images" name="images" multiple accept="image/*">
+            <label for="paper_size">Paper Size:</label>
+            <select id="paper_size" name="paper_size">
+                <option value="A4">A4</option>
+                <option value="A3">A3</option>
+                <!-- Add more sizes if needed -->
+            </select>
+            <button type="submit">Generate PDF</button>
+        </form>
+        <p id="status"></p>
+    </main>
+    <script src="/static/app.js"></script>
+</body>
+</html>
