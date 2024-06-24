@@ -1,15 +1,18 @@
 import os
+from datetime import datetime
+
+# Current timestamp as a string, e.g., "20230430_123456"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 # Base directory of the project
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Path for images and PDFs
 IMAGE_PATH = os.path.join(BASE_DIR, 'static', 'uploads', 'png', 'Flios-logo-03.png')
-PDF_OUTPUT_FOLDER = os.path.join(BASE_DIR, 'static', 'output', 'contours', 'pdf_contours',)
-PNG_OUTPUT_FOLDER = os.path.join(BASE_DIR, 'static', 'output', 'contours', 'png_contours',)
+PDF_OUTPUT_FOLDER = os.path.join(BASE_DIR, 'static', 'output', 'pdf_output')
+PNG_OUTPUT_FOLDER = os.path.join(BASE_DIR, 'static', 'output', 'contours', 'png_contours')
 PNG_NO_ALPHA_FOLDER = os.path.join(BASE_DIR, 'static', 'output', 'images', 'no_alpha')
 UPLOADS_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
-OUTPUT_FOLDER = os.path.join(BASE_DIR, 'static', 'output')
 
 # File names for images and PFDs
 CONTOUR_PDF_FILE = os.path.join(PDF_OUTPUT_FOLDER, os.path.basename(IMAGE_PATH).split('.')[0] + '_contour.pdf')
