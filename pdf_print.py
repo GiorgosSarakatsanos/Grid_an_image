@@ -1,40 +1,61 @@
 from PIL import Image
-from fpdf import FPDF
-from config import IMAGE_PATH, CONTOUR_IMAGE_FILE, CONTOUR_PDF_FILE, A3_WIDTH_PT, A3_HEIGHT_PT, IMG_WIDTH_PT, IMG_HEIGHT_PT, CONTOUR_PDF_FILE, PDF_OUTPUT_FOLDER
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import landscape
+from config import PDF_OUTPUT_FOLDER  # Assuming this is correctly pointing to your desired output folder
 import os
 
+def mm_to_points(mm):
+    return mm * 2.83465
 
-# 
 def generate_pdf(image_path):
-    # Open the image
-    img = Image.open(image_path)
+    # Define the dimensions in millimeters
+    img_width_mm = 85
+    img_height_mm = 55
+    paper_width_mm = 210
+    paper_height_mm = 297
+    top_margin = 15
+    left_margin = 37
+    bottom_margin = 15
+    right_margin = 17
     
-    pdf = FPDF(format='A3')     # Create a PDF object
-    pdf.add_page()  # Add a page to the PDF
+    # Calculate the image and paper sizes in points
+    img_width_pts = mm_to_points(img_width_mm)
+    img_height_pts = mm_to_points(img_height_mm)
     
-    # Calculate the number of columns and rows that fit in an A3 page
-    margin_long_edge = 15  # in mm
-    margin_short_edge = 35  # in mm
+    # Calculate the number of rows and columns based on page size and margins
+    rows = int((paper_height_mm - top_margin - bottom_margin) / img_height_mm)
+    columns = int((paper_width_mm - left_margin - right_margin) / img_width_mm)
     
-    a3_width_pt = A3_WIDTH_PT - 2 * margin_long_edge
-    a3_height_pt = A3_HEIGHT_PT - 2 * margin_short_edge
-    
-    img_width_pt = IMG_WIDTH_PT
-    img_height_pt = IMG_HEIGHT_PT
-    
-    num_columns = int(a3_width_pt // img_width_pt)
-    num_rows = int(a3_height_pt // img_height_pt)
-    
-    # Iterate over each position and place the image    
-    for row in range(num_rows):     # Iterate over each row
-        for col in range(num_columns):  # Iterate over each column
-            x = margin_long_edge + col * img_width_pt    # Calculate the x position
-            y = margin_short_edge + row * img_height_pt  # Calculate the y position
-            pdf.image(image_path, x, y, img_width_pt, img_height_pt) # Place the image in the PDF
+    # Calculate the paper width and height in points including margins
+    paper_width_pts = mm_to_points(paper_width_mm)
+    paper_height_pts = mm_to_points(paper_height_mm)
     
     # Create a unique filename based on the original image filename
     image_filename = os.path.basename(image_path)
     pdf_filename = os.path.splitext(image_filename)[0] + '.pdf'
+    
+    # Ensure the output folder exists
+    os.makedirs(PDF_OUTPUT_FOLDER, exist_ok=True)
+    
+    # Create the canvas with the unique filename in the output folder
+    c = canvas.Canvas(os.path.join(PDF_OUTPUT_FOLDER, pdf_filename), pagesize=landscape((paper_width_pts, paper_height_pts)))
+    
+    for row in range(rows):
+        for col in range(columns):
+            x = left_margin + col * img_width_pts
+            y = paper_height_pts - top_margin - (row + 1) * img_height_pts
 
-    # Save the PDF file
-    pdf.output(os.path.join(PDF_OUTPUT_FOLDER, pdf_filename), 'F')
+            img = Image.open(image_path)
+            img_width, img_height = img.size
+
+            if img_width > img_height:
+                c.saveState()
+                c.translate(x + img_width_pts / 2, y + img_height_pts / 2)
+                c.rotate(90)
+                c.drawImage(image_path, -img_width_pts / 2, -img_height_pts / 2, width=img_width_pts, height=img_height_pts)
+                c.restoreState()
+            else:
+                c.drawImage(image_path, x, y, width=img_width_pts, height=img_height_pts)
+
+    # Finalize the PDF file
+    c.save()

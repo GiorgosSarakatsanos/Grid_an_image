@@ -13,6 +13,3 @@ transparent_image = replace_alpha_with_transparent(IMAGE_PATH) # Generate the tr
 images_pdf = generate_pdf(IMAGE_PATH) # Generate the PDF file for uploaded image
 no_alpha_pdf = generate_pdf(PNG_NO_ALPHA_FILE) # Generate the PDF file for contours
 contours_pdf = generate_pdf(CONTOUR_IMAGE_FILE) # Generate the PDF file for contours
-
-
-
