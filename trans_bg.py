@@ -1,17 +1,22 @@
 from PIL import Image
-from config import PNG_NO_ALPHA_FILE, PNG_NO_ALPHA_FOLDER, IMAGE_PATH
+from config import PNG_NO_ALPHA_FILE
 
 
-def replace_alpha_with_transparent(image_path):
+def replace_alpha_with_transparent(image_path, background_color=(255, 255, 255)):
     image = Image.open(image_path).convert('RGBA')
     datas = image.getdata()
 
-    new_data = [] # Create a new list to store the new data
-    for item in datas: # Loop through the data
-        if item[0] == 255 and item[1] == 255 and item[2] == 255: # If the pixel is white
-            new_data.append((255, 255, 255, 0)) # Add a transparent pixel
+    new_data = []  # Create a new list to store the new data
+    for item in datas:  # Loop through the data
+        # If the pixel matches the background color, make it transparent
+        if item[:3] == background_color:
+            new_data.append((item[0], item[1], item[2], 0))  # Change alpha to 0
         else:
-            new_data.append(item) # Add the pixel as it is
+            new_data.append(item)  # Add the pixel as it is
+
+    # Update the image with the new data
+    image.putdata(new_data)
+    image.save(image_path.replace('.png', '_transparent.png'))  # Save the modified image with a new name
 
     image.putdata(new_data) # Put the new data in the image
     image.save(PNG_NO_ALPHA_FILE) # Save the image

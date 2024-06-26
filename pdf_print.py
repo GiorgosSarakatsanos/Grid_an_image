@@ -18,25 +18,27 @@ paper_size_key = 'A3'  # This can be dynamically chosen based on your requiremen
 def generate_pdf(image_path):
     paper_width_mm, paper_height_mm = paper_sizes[paper_size_key]
 
-    img_width_mm = 25
-    img_height_mm = 25
+    img_width_mm = 85
+    img_height_mm = 55
     top_margin = 15
     left_margin = 37
     bottom_margin = 15
     right_margin = 17
+    gap_mm = 5  # Gap size in millimeters
 
     img_width_pts = mm_to_points(img_width_mm)
     img_height_pts = mm_to_points(img_height_mm)
     paper_width_pts = mm_to_points(paper_width_mm)
     paper_height_pts = mm_to_points(paper_height_mm)
+    gap_pts = mm_to_points(gap_mm)
 
     # Calculate the available space for images on the page, in points
     available_width_pts = paper_width_pts - mm_to_points(left_margin + right_margin)
     available_height_pts = paper_height_pts - mm_to_points(top_margin + bottom_margin)
 
-    # Calculate the number of rows and columns based on available space and image size
-    columns = int(available_width_pts / img_width_pts)
-    rows = int(available_height_pts / img_height_pts)
+    # Adjust calculations to account for gaps between images
+    columns = int((available_width_pts + gap_pts) / (img_width_pts + gap_pts))
+    rows = int((available_height_pts + gap_pts) / (img_height_pts + gap_pts))
 
     image_filename = os.path.basename(image_path)
     pdf_filename = os.path.splitext(image_filename)[0] + '.pdf'
@@ -73,8 +75,9 @@ def generate_pdf(image_path):
 
     for row in range(rows):
         for col in range(columns):
-            x = mm_to_points(left_margin) + col * img_width_pts
-            y = paper_height_pts - mm_to_points(top_margin) - (row + 1) * img_height_pts
+            # Adjust x and y position to include the gap
+            x = mm_to_points(left_margin) + col * (img_width_pts + gap_pts)
+            y = paper_height_pts - mm_to_points(top_margin) - (row + 1) * img_height_pts - row * gap_pts
             c.drawImage(image_path, x, y, width=img_width_pts, height=img_height_pts)
 
     c.save()
