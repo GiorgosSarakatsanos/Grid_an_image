@@ -1,9 +1,8 @@
 import sys
-from config import IMAGE_PATH, PYTHON_MODULES_PATH, CONTOUR_IMAGE_FILE, IMAGE_PATH, PYTHON_MODULES_PATH, PNG_NO_ALPHA_FILE # Import the IMAGE_PATH and PYTHON_MODULES_PATH variables
+from config import IMAGE_PATH, CONTOUR_IMAGE_FILE, IMAGE_PATH
 from contour import generate_contour
 from pdf_print import generate_pdf
 from trans_bg import replace_alpha_with_transparent
-sys.path.append(PYTHON_MODULES_PATH)
 
 # CONTOUR Production
 contour_image = generate_contour(IMAGE_PATH) # Generate the contour image
