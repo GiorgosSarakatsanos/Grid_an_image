@@ -1,22 +1,53 @@
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/static/service-worker.js').then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+});
 
-            registration.addEventListener('updatefound', () => {
-                const installingWorker = registration.installing;
-                installingWorker.addEventListener('statechange', () => {
-                    if (installingWorker.state === 'installed') {
-                        if (navigator.serviceWorker.controller) {
-                            // New update available
-                            const statusElement = document.getElementById('status');
-                            statusElement.textContent = 'Update Available. Please refresh the page.';
-                        }
-                    }
-                });
-            });
-        }).catch(function(error) {
-            console.error('Service Worker registration failed:', error);
-        });
-    });
+function generatePdf() {
+    const formData = new FormData(document.getElementById('uploadForm'));
+    fetch('/generate-pdf', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'generated.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function generateContoursPdf() {
+    const formData = new FormData(document.getElementById('uploadForm'));
+    fetch('/generate-contours-pdf', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'contours_generated.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => console.error('Error:', error));
 }
